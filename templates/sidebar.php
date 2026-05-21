@@ -49,7 +49,7 @@
             </li>
 
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-black">
+                <a href="/gestion_activos/modulos/reportes/inventario.php" class="nav-link text-black">
                     <i class="bi bi-file-earmark-pdf"></i>
                     Reportes
                 </a>
