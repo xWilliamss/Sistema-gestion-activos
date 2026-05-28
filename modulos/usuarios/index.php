@@ -1,6 +1,24 @@
 <?php
 
 session_start();
+/* 
+En caso de ocultar esta pagina los roles que nos sean el admin.
+if($_SESSION['rol'] != 'admin'){
+
+    echo "
+
+    <div style='padding:20px;
+    font-family:Arial;'>
+
+        Acceso denegado
+
+    </div>
+
+    ";
+
+    exit();
+}
+*/
 
 if(!isset($_SESSION['usuario'])){
     header("Location: ../../login.php");

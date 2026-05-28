@@ -48,12 +48,15 @@
                 </a>
             </li>
 
+
+            <?php if($_SESSION['rol']== 'admin'){ ?>
             <li class="nav-item mb-2">
                 <a href="/gestion_activos/modulos/reportes/inventario.php" class="nav-link text-black">
                     <i class="bi bi-file-earmark-pdf"></i>
                     Reportes
                 </a>
             </li>
+            <?php } ?>
 
         </ul>
         <hr>

@@ -31,10 +31,12 @@ include("../../templates/sidebar.php");
             Gestión de Activos
         </h2>
 
+        <?php if($_SESSION['rol'] != 'consulta'){ ?> 
         <a href="crear.php" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i>
             Nuevo Activo
         </a>
+        <?php } ?>
 
     </div>
 
@@ -88,21 +90,26 @@ include("../../templates/sidebar.php");
                         </td>
 
                         <td>
-
+                            <?php if($_SESSION['rol'] != 'consulta'){ ?>
                             <a href="editar.php?id=<?= $fila['id'] ?>" class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil-square"></i>
                             </a>
-                            
+                            <?php } ?>
+
+                            <?php if($_SESSION['rol'] != 'consulta'){ ?>
                             <a href="historial.php?id=<?= $fila['id'] ?>"class="btn btn-info btn-sm">
                                 <i class="bi bi-clock-history"></i> 
                             </a>
+                            <?php } ?>
 
+                            <?php if($_SESSION['rol'] != 'consulta'){ ?>
                             <a href="eliminar.php?id=<?= $fila['id'] ?>" 
                             class="btn btn-danger btn-sm" 
                             onclick="return confirm('¿Deseas enviar este activo a baja?')">
                             
                                 <i class="bi bi-trash"></i>
                             </a>
+                            <?php } ?>
 
                         </td>
 
