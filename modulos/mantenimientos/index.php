@@ -19,13 +19,15 @@ include("../../templates/sidebar.php");
         <h2>
             Mantenimientos
         </h2>
-
+        
+        <?php if($_SESSION['rol'] != 'consulta'){ ?>
         <a href="crear.php" class="btn btn-primary">
 
             <i class="bi bi-plus-circle"></i>
             Nuevo Mantenimiento
 
         </a>
+        <?php } ?>
 
     </div>
 

@@ -90,6 +90,7 @@ include("../../templates/sidebar.php");
                         </td>
 
                         <td>
+                            <!--Esta linea 94 nos ayuda a ocultar los botones de crud-->
                             <?php if($_SESSION['rol'] != 'consulta'){ ?>
                             <a href="editar.php?id=<?= $fila['id'] ?>" class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil-square"></i>

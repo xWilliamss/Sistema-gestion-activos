@@ -20,12 +20,14 @@ include("../../templates/sidebar.php");
             Asignaciones de Activos
         </h2>
 
+        <?php if($_SESSION['rol'] != 'consulta'){ ?>
         <a href="crear.php" class="btn btn-primary">
 
             <i class="bi bi-plus-circle"></i>
             Nueva Asignación
 
         </a>
+        <?php } ?>
 
     </div>
 
@@ -98,7 +100,7 @@ include("../../templates/sidebar.php");
                         </td>
 
                         <td>
-
+                            <?php if($_SESSION['rol'] != 'consulta'){ ?>
                             <a href="devolver.php?id=<?= $fila['id'] ?>"
                             class="btn btn-danger btn-sm"
 
@@ -107,6 +109,7 @@ include("../../templates/sidebar.php");
                                 <i class="bi bi-arrow-return-left"></i>
 
                             </a>
+                            <?php } ?>
 
                         </td>
 

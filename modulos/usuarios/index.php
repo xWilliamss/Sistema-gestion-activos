@@ -38,6 +38,7 @@ include("../../templates/sidebar.php");
             Usuarios
         </h2>
 
+        <?php if($_SESSION['rol'] != 'consulta'){ ?>
         <a href="crear.php"
         class="btn btn-primary">
 
@@ -45,6 +46,7 @@ include("../../templates/sidebar.php");
             Nuevo Usuario
 
         </a>
+        <?php } ?>
 
     </div>
 
@@ -116,13 +118,17 @@ include("../../templates/sidebar.php");
 
                         <td>
 
+                            <!--ocultar botines solo para rol de consulta-->
+                            <?php if($_SESSION['rol'] != 'consulta'){ ?>
                             <a href="editar.php?id=<?= $fila['id'] ?>"
                             class="btn btn-warning btn-sm">
 
                                 <i class="bi bi-pencil"></i>
 
                             </a>
+                            <?php } ?>
 
+                            <?php if($_SESSION['rol'] != 'consulta'){ ?>
                             <a href="eliminar.php?id=<?= $fila['id'] ?>"
                             class="btn btn-danger btn-sm"
 
@@ -131,6 +137,7 @@ include("../../templates/sidebar.php");
                                 <i class="bi bi-trash"></i>
 
                             </a>
+                            <?php } ?>
 
                         </td>
 
