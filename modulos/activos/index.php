@@ -31,7 +31,7 @@ include("../../templates/sidebar.php");
             Gestión de Activos
         </h2>
 
-        <?php if($_SESSION['rol'] != 'consulta'){ ?> 
+        <?php if($_SESSION['rol'] == 'admin'){ ?> 
         <a href="crear.php" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i>
             Nuevo Activo
@@ -103,7 +103,7 @@ include("../../templates/sidebar.php");
                             </a>
                             <?php } ?>
 
-                            <?php if($_SESSION['rol'] != 'consulta'){ ?>
+                            <?php if($_SESSION['rol'] == 'admin'){ ?>
                             <a href="eliminar.php?id=<?= $fila['id'] ?>" 
                             class="btn btn-danger btn-sm" 
                             onclick="return confirm('¿Deseas enviar este activo a baja?')">

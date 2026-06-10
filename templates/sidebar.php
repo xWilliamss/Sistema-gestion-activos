@@ -26,20 +26,23 @@
                     Activos
                 </a>
             </li>
-
+            <?php if($_SESSION['rol'] != 'tecnico'){ ?>
             <li class="nav-item mb-2">
                 <a href="/gestion_activos/modulos/usuarios/" class="nav-link text-black">
                     <i class="bi bi-people"></i>
                         Usuarios
                 </a>
             </li>
+            <?php } ?>
 
+            <?php if($_SESSION['rol'] != 'tecnico'){ ?>
             <li class="nav-item mb-2">
                 <a href="/gestion_activos/modulos/asignaciones/" class="nav-link text-black">
                     <i class="bi bi-arrow-left-right"></i>
                     Asignaciones
                 </a>
             </li>
+            <?php } ?>
 
             <li class="nav-item mb-2">
                 <a href="/gestion_activos/modulos/mantenimientos/" class="nav-link text-black">
@@ -49,14 +52,12 @@
             </li>
 
 
-            <?php if($_SESSION['rol']== 'admin'){ ?>
             <li class="nav-item mb-2">
                 <a href="/gestion_activos/modulos/reportes/inventario.php" class="nav-link text-black">
                     <i class="bi bi-file-earmark-pdf"></i>
                     Reportes
                 </a>
             </li>
-            <?php } ?>
 
         </ul>
         <hr>

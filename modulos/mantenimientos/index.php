@@ -45,7 +45,7 @@ include("../../templates/sidebar.php");
                         <th>Activo</th>
                         <th>Tipo</th>
                         <th>Técnico</th>
-                        <th>Costo</th>
+                        <th>Descripción</th>
                         <th>Fecha</th>
 
                     </tr>
@@ -95,7 +95,7 @@ include("../../templates/sidebar.php");
 
                         <td><?= $fila['tecnico'] ?></td>
 
-                        <td>$<?= $fila['costo'] ?></td>
+                        <td><?= $fila['descripcion'] ?></td>
 
                         <td><?= $fila['fecha'] ?></td>
 
