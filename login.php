@@ -3,10 +3,12 @@
 /*Este código corresponde a la página de Inicio de Sesión (Login) del sistema. */
 
 session_start();
+require_once __DIR__ . '/config/auth.php';
 /*isset($_SESSION['usuario']): Comprueba si la variable de sesión usuario ya existe.*/
 /*header("Location: index.php"): Si el usuario ya había iniciado sesión previamente, este bloque lo redirige automáticamente a la página principal (index.php). */
 if (isset($_SESSION['usuario'])) {
     header("Location: index.php");
+    exit();
 }
 ?>
 
@@ -25,6 +27,14 @@ if (isset($_SESSION['usuario'])) {
      <!-- Bootstrap Icons -->
     <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            background-color: navy;
+
+
+        }
+    </style>
 
 </head>
 
@@ -57,6 +67,8 @@ if (isset($_SESSION['usuario'])) {
 
                         <!--method="POST": Envía la información oculta en el cuerpo de la petición. -->
                         <form action="validar.php" method="POST">
+
+                            <?= csrf_field() ?>
 
                             <div class="mb-3">
 

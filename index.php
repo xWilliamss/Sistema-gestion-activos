@@ -1,10 +1,8 @@
 <?php
 
 session_start();
-
-if(!isset($_SESSION['usuario'])){
-    header("Location: login.php");
-}
+require_once __DIR__ . '/config/auth.php';
+require_login();
 
 include("config/conexion.php");
 include("templates/header.php");
@@ -57,7 +55,7 @@ $totalMantenimientos = $resultadoMantenimientos->fetch_assoc()['total'];
         <p class="text-muted">
 
             Bienvenido,
-            <?= $_SESSION['nombre'] ?>
+            <?= app_escape($_SESSION['nombre']) ?>
 
         </p>
 
@@ -246,15 +244,15 @@ $totalMantenimientos = $resultadoMantenimientos->fetch_assoc()['total'];
 
                     <tr>
 
-                        <td><?= $fila['codigo'] ?></td>
+                        <td><?= app_escape($fila['codigo']) ?></td>
 
-                        <td><?= $fila['modelo'] ?></td>
+                        <td><?= app_escape($fila['modelo']) ?></td>
 
                         <td>
 
                             <span class="badge bg-success">
 
-                                <?= $fila['estado'] ?>
+                                <?= app_escape($fila['estado']) ?>
 
                             </span>
 

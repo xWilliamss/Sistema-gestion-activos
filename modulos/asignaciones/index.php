@@ -1,10 +1,8 @@
 <?php
 
 session_start();
-
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
-}
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin', 'consulta']);
 
 include("../../config/conexion.php");
 include("../../templates/header.php");
@@ -82,33 +80,36 @@ include("../../templates/sidebar.php");
 
                         <td><?= $fila['id'] ?></td>
 
-                        <td><?= $fila['codigo'] ?></td>
+                        <td><?= app_escape($fila['codigo']) ?></td>
 
                         <td>
-                            <?= $fila['nombre'] ?>
-                            <?= $fila['apellido'] ?>
+                            <?= app_escape($fila['nombre']) ?>
+                            <?= app_escape($fila['apellido']) ?>
                         </td>
 
-                        <td><?= $fila['fecha_asignacion'] ?></td>
+                        <td><?= app_escape($fila['fecha_asignacion']) ?></td>
 
                         <td>
 
                             <span class="badge bg-success">
-                                <?= $fila['estado'] ?>
+                                <?= app_escape($fila['estado']) ?>
                             </span>
 
                         </td>
 
                         <td>
                             <?php if($_SESSION['rol'] != 'consulta'){ ?>
-                            <a href="devolver.php?id=<?= $fila['id'] ?>"
-                            class="btn btn-danger btn-sm"
+                            <form action="devolver.php" method="POST" class="d-inline">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                            <button type="submit" class="btn btn-danger btn-sm"
 
                             onclick="return confirm('¿Deseas devolver este activo?')">
 
                                 <i class="bi bi-arrow-return-left"></i>
 
-                            </a>
+                            </button>
+                            </form>
                             <?php } ?>
 
                         </td>

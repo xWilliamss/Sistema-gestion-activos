@@ -1,10 +1,8 @@
 <?php
 
 session_start();
-
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
-}
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin']);
 
 include("../../config/conexion.php");
 include("../../templates/header.php");
@@ -27,6 +25,8 @@ include("../../templates/sidebar.php");
         <div class="card-body">
 
             <form action="guardar.php" method="POST">
+
+                <?= csrf_field() ?>
 
                 <div class="row">
 
@@ -57,11 +57,11 @@ include("../../templates/sidebar.php");
 
                             ?>
 
-                            <option value="<?= $activo['id'] ?>">
+                            <option value="<?= (int) $activo['id'] ?>">
 
-                                <?= $activo['codigo'] ?>
-                                -
-                                <?= $activo['modelo'] ?>
+                                <?= app_escape($activo['codigo']) ?>
+
+                                <?= app_escape($activo['modelo']) ?>
 
                             </option>
 
@@ -83,7 +83,7 @@ include("../../templates/sidebar.php");
 
                             <?php
 
-                            $sqlUsuarios = "SELECT * FROM usuarios";
+                            $sqlUsuarios = "SELECT * FROM usuarios WHERE estado = 'activo'";
 
                             $resultadoUsuarios = $conexion->query($sqlUsuarios);
 
@@ -91,10 +91,10 @@ include("../../templates/sidebar.php");
 
                             ?>
 
-                            <option value="<?= $usuario['id'] ?>">
+                            <option value="<?= (int) $usuario['id'] ?>">
 
-                                <?= $usuario['nombre'] ?>
-                                <?= $usuario['apellido'] ?>
+                                <?= app_escape($usuario['nombre']) ?>
+                                <?= app_escape($usuario['apellido']) ?>
 
                             </option>
 

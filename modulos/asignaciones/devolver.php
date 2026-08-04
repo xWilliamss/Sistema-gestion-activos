@@ -1,61 +1,42 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin']);
+require_post();
+verify_csrf();
+require_once __DIR__ . '/../../config/conexion.php';
 
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
+$id = positive_int($_POST['id'] ?? null);
+if ($id === null) {
+    http_response_code(422);
+    exit('Asignación no válida.');
 }
 
-include("../../config/conexion.php");
+try {
+    $conexion->begin_transaction();
 
-$id = $_GET['id'];
+    $buscar = $conexion->prepare("SELECT activo_id FROM asignaciones WHERE id = ? AND estado = 'activo' FOR UPDATE");
+    $buscar->bind_param('i', $id);
+    $buscar->execute();
+    $asignacion = $buscar->get_result()->fetch_assoc();
+    if (!$asignacion) {
+        throw new RuntimeException('La asignación no está activa.');
+    }
 
+    // El esquema admite activo/finalizado; se usa finalizado como estado de devolución.
+    $devolver = $conexion->prepare("UPDATE asignaciones SET estado = 'finalizado', fecha_devolucion = NOW() WHERE id = ?");
+    $devolver->bind_param('i', $id);
+    $devolver->execute();
 
-// OBTENER DATOS DE ASIGNACIÓN
-
-$sqlAsignacion = "SELECT * FROM asignaciones
-WHERE id='$id'";
-
-$resultadoAsignacion = $conexion->query($sqlAsignacion);
-
-$asignacion = $resultadoAsignacion->fetch_assoc();
-
-$activo_id = $asignacion['activo_id'];
-
-
-// ACTUALIZAR ASIGNACIÓN
-
-$sql = "UPDATE asignaciones
-
-SET
-estado='devuelto',
-fecha_devolucion=NOW()
-
-WHERE id='$id'";
-
-
-if($conexion->query($sql) === TRUE){
-
-    // REGISTRAR HISTORIAL
-
-    $historial = "INSERT INTO historial_activos
-    (activo_id, accion, descripcion)
-
-    VALUES
-
-    (
-    '$activo_id',
-    'Devolución',
-    'Activo devuelto y liberado'
-    )";
-
-    $conexion->query($historial);
-
-    header("Location: index.php");
-
-}else{
-
-    echo "Error: " . $conexion->error;
-
+    $historial = $conexion->prepare("INSERT INTO historial_activos (activo_id, accion, descripcion) VALUES (?, 'Devolución', 'Activo devuelto y liberado')");
+    $historial->bind_param('i', $asignacion['activo_id']);
+    $historial->execute();
+    $conexion->commit();
+} catch (Throwable $e) {
+    $conexion->rollback();
+    http_response_code(500);
+    exit('No fue posible devolver el activo.');
 }
-?>
+
+header('Location: index.php');
+exit();

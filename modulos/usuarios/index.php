@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin', 'consulta']);
 /* 
 En caso de ocultar esta pagina los roles que nos sean el admin.
 if($_SESSION['rol'] != 'admin'){
@@ -20,10 +22,6 @@ if($_SESSION['rol'] != 'admin'){
 }
 */
 
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
-}
-
 include("../../config/conexion.php");
 include("../../templates/header.php");
 include("../../templates/sidebar.php");
@@ -33,7 +31,6 @@ include("../../templates/sidebar.php");
 <div class="container-fluid p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-
         <h2>
             Usuarios
         </h2>
@@ -92,25 +89,25 @@ include("../../templates/sidebar.php");
 
                         <td>
 
-                            <?= $fila['nombre'] ?>
-                            <?= $fila['apellido'] ?>
+                            <?= app_escape($fila['nombre']) ?>
+                            <?= app_escape($fila['apellido']) ?>
 
                         </td>
 
-                        <td><?= $fila['departamento'] ?></td>
+                        <td><?= app_escape($fila['departamento']) ?></td>
 
-                        <td><?= $fila['cargo'] ?></td>
+                        <td><?= app_escape($fila['cargo']) ?></td>
 
-                        <td><?= $fila['correo'] ?></td>
+                        <td><?= app_escape($fila['correo']) ?></td>
 
-                        <td><?= $fila['telefono'] ?></td>
+                        <td><?= app_escape($fila['telefono']) ?></td>
                         
 
                         <td>
 
                             <span class="badge bg-success">
 
-                                <?= $fila['estado'] ?>
+                                <?= app_escape($fila['estado']) ?>
 
                             </span>
 
@@ -129,14 +126,17 @@ include("../../templates/sidebar.php");
                             <?php } ?>
 
                             <?php if($_SESSION['rol'] != 'consulta'){ ?>
-                            <a href="eliminar.php?id=<?= $fila['id'] ?>"
-                            class="btn btn-danger btn-sm"
+                            <form action="eliminar.php" method="POST" class="d-inline">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                            <button type="submit" class="btn btn-danger btn-sm"
 
                             onclick="return confirm('¿Deseas desactivar este usuario?')">
 
                                 <i class="bi bi-trash"></i>
 
-                            </a>
+                            </button>
+                            </form>
                             <?php } ?>
 
                         </td>

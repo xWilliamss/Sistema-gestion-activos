@@ -6,7 +6,6 @@ require_post();
 verify_csrf();
 require_once __DIR__ . '/../../config/conexion.php';
 
-$id = positive_int($_POST['id'] ?? null);
 $nombre = trim($_POST['nombre'] ?? '');
 $apellido = trim($_POST['apellido'] ?? '');
 $departamento = trim($_POST['departamento'] ?? '');
@@ -14,17 +13,17 @@ $cargo = trim($_POST['cargo'] ?? '');
 $correo = trim($_POST['correo'] ?? '');
 $telefono = trim($_POST['telefono'] ?? '');
 
-if ($id === null || $nombre === '' || $apellido === '' || ($correo !== '' && !filter_var($correo, FILTER_VALIDATE_EMAIL))) {
+if ($nombre === '' || $apellido === '' || ($correo !== '' && !filter_var($correo, FILTER_VALIDATE_EMAIL))) {
     http_response_code(422);
     exit('Datos de usuario no válidos.');
 }
 
-$stmt = $conexion->prepare('UPDATE usuarios SET nombre = ?, apellido = ?, departamento = ?, cargo = ?, correo = ?, telefono = ? WHERE id = ?');
-$stmt->bind_param('ssssssi', $nombre, $apellido, $departamento, $cargo, $correo, $telefono, $id);
+$stmt = $conexion->prepare("INSERT INTO usuarios (nombre, apellido, departamento, cargo, correo, telefono, estado) VALUES (?, ?, ?, ?, ?, ?, 'activo')");
+$stmt->bind_param('ssssss', $nombre, $apellido, $departamento, $cargo, $correo, $telefono);
 
 if (!$stmt->execute()) {
     http_response_code(500);
-    exit('No fue posible actualizar el usuario.');
+    exit('No fue posible guardar el usuario.');
 }
 
 header('Location: index.php');

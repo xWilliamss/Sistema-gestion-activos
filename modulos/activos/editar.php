@@ -1,114 +1,54 @@
 <?php
 
-include("../../config/conexion.php");
-include("../../templates/header.php");
-include("../../templates/sidebar.php");
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin', 'tecnico']);
+require_once __DIR__ . '/../../config/conexion.php';
 
-$id = $_GET['id'];
+$id = positive_int($_GET['id'] ?? null);
+if ($id === null) {
+    http_response_code(404);
+    exit('Activo no válido.');
+}
 
-$sql = "SELECT * FROM activos WHERE id = '$id'";
-$resultado = $conexion->query($sql);
+$stmt = $conexion->prepare('SELECT id, codigo, serie, modelo, sistema_operativo, estado FROM activos WHERE id = ? LIMIT 1');
+$stmt->bind_param('i', $id);
+$stmt->execute();
+$activo = $stmt->get_result()->fetch_assoc();
+if (!$activo) {
+    http_response_code(404);
+    exit('Activo no encontrado.');
+}
 
-$activo = $resultado->fetch_assoc();
-
+include '../../templates/header.php';
+include '../../templates/sidebar.php';
 ?>
 
 <div class="container-fluid p-4">
-
     <div class="card shadow border-0">
-
-        <div class="card-header bg-warning">
-
-            <h4>
-                Editar Activo
-            </h4>
-
-        </div>
-
+        <div class="card-header bg-warning"><h4>Editar Activo</h4></div>
         <div class="card-body">
-
             <form action="actualizar.php" method="POST">
-
-                <input type="hidden" name="id" value="<?= $activo['id'] ?>">
-
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" value="<?= (int) $activo['id'] ?>">
                 <div class="row">
-
+                    <div class="col-md-6 mb-3"><label>Código</label><input type="text" name="codigo" value="<?= app_escape($activo['codigo']) ?>" class="form-control" required></div>
+                    <div class="col-md-6 mb-3"><label>Serie</label><input type="text" name="serie" value="<?= app_escape($activo['serie']) ?>" class="form-control"></div>
+                    <div class="col-md-6 mb-3"><label>Modelo</label><input type="text" name="modelo" value="<?= app_escape($activo['modelo']) ?>" class="form-control"></div>
+                    <div class="col-md-6 mb-3"><label>Sistema Operativo</label><input type="text" name="sistema_operativo" value="<?= app_escape($activo['sistema_operativo']) ?>" class="form-control"></div>
                     <div class="col-md-6 mb-3">
-                        <label>Código</label>
-                        <input type="text" name="codigo"
-                        value="<?= $activo['codigo'] ?>"
-                        class="form-control" required>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label>Serie</label>
-                        <input type="text" name="serie"
-                        value="<?= $activo['serie'] ?>"
-                        class="form-control">
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label>Modelo</label>
-                        <input type="text" name="modelo"
-                        value="<?= $activo['modelo'] ?>"
-                        class="form-control">
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label>Sistema Operativo</label>
-                        <input type="text" name="sistema_operativo"
-                        value="<?= $activo['sistema_operativo'] ?>"
-                        class="form-control">
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-
                         <label>Estado</label>
-
                         <select name="estado" class="form-select">
-
-                            <option value="activo"
-                            <?= $activo['estado'] == 'activo' ? 'selected' : '' ?>>
-                            Activo
-                            </option>
-
-                            <option value="dañado"
-                            <?= $activo['estado'] == 'dañado' ? 'selected' : '' ?>>
-                            Dañado
-                            </option>
-
-                            <option value="reparacion"
-                            <?= $activo['estado'] == 'reparacion' ? 'selected' : '' ?>>
-                            Reparación
-                            </option>
-
-                            <option value="baja"
-                            <?= $activo['estado'] == 'baja' ? 'selected' : '' ?>>
-                            Baja
-                            </option>
-
+                            <?php foreach (['activo' => 'Activo', 'dañado' => 'Dañado', 'reparacion' => 'Reparación', 'baja' => 'Baja'] as $valor => $etiqueta): ?>
+                                <option value="<?= $valor ?>" <?= $activo['estado'] === $valor ? 'selected' : '' ?>><?= $etiqueta ?></option>
+                            <?php endforeach; ?>
                         </select>
-
                     </div>
-
                 </div>
-
-                <button type="submit" class="btn btn-success">
-                    Actualizar
-                </button>
-
-                <a href="index.php" class="btn btn-secondary">
-                    Volver
-                </a>
-
+                <button type="submit" class="btn btn-success">Actualizar</button>
+                <a href="index.php" class="btn btn-secondary">Volver</a>
             </form>
-
         </div>
-
     </div>
-
 </div>
 
-<?php
-include("../../templates/footer.php");
-?>
+<?php include '../../templates/footer.php'; ?>

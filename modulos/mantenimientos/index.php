@@ -1,10 +1,8 @@
 <?php
 
 session_start();
-
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
-}
+require_once __DIR__ . '/../../config/auth.php';
+require_login();
 
 include("../../config/conexion.php");
 include("../../templates/header.php");
@@ -81,23 +79,23 @@ include("../../templates/sidebar.php");
 
                         <td><?= $fila['id'] ?></td>
 
-                        <td><?= $fila['codigo'] ?></td>
+                        <td><?= app_escape($fila['codigo']) ?></td>
 
                         <td>
 
                             <span class="badge bg-warning text-dark">
 
-                                <?= $fila['tipo'] ?>
+                                <?= app_escape($fila['tipo']) ?>
 
                             </span>
 
                         </td>
 
-                        <td><?= $fila['tecnico'] ?></td>
+                        <td><?= app_escape($fila['tecnico']) ?></td>
 
-                        <td><?= $fila['descripcion'] ?></td>
+                        <td><?= app_escape($fila['descripcion']) ?></td>
 
-                        <td><?= $fila['fecha'] ?></td>
+                        <td><?= app_escape($fila['fecha']) ?></td>
 
                     </tr>
 

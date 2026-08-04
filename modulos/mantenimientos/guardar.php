@@ -1,54 +1,48 @@
 <?php
 
-session_start();
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin', 'tecnico']);
+require_post();
+verify_csrf();
+require_once __DIR__ . '/../../config/conexion.php';
 
-include("../../config/conexion.php");
+$activoId = positive_int($_POST['activo_id'] ?? null);
+$tipo = $_POST['tipo'] ?? '';
+$descripcion = trim($_POST['descripcion'] ?? '');
+$tecnico = trim($_POST['tecnico'] ?? '');
+$costo = $_POST['costo'] ?? '';
+$tiposPermitidos = ['Preventivo', 'Correctivo'];
 
-$activo_id = $_POST['activo_id'];
-$tipo = $_POST['tipo'];
-$descripcion = $_POST['descripcion'];
-$tecnico = $_POST['tecnico'];
-$costo = $_POST['costo'];
-
-$sql = "INSERT INTO mantenimientos
-
-(activo_id, tipo, descripcion, fecha, costo, tecnico)
-
-VALUES
-
-(
-'$activo_id',
-'$tipo',
-'$descripcion',
-NOW(),
-'$costo',
-'$tecnico'
-)";
-
-
-if($conexion->query($sql) === TRUE){
-
-    // HISTORIAL
-
-    $historial = "INSERT INTO historial_activos
-
-    (activo_id, accion, descripcion)
-
-    VALUES
-
-    (
-    '$activo_id',
-    'Mantenimiento',
-    '$tipo registrado'
-    )";
-
-    $conexion->query($historial);
-
-    header("Location: index.php");
-
-}else{
-
-    echo "Error: " . $conexion->error;
-
+if ($activoId === null || !in_array($tipo, $tiposPermitidos, true) || ($costo !== '' && (!is_numeric($costo) || (float) $costo < 0))) {
+    http_response_code(422);
+    exit('Datos de mantenimiento no válidos.');
 }
-?>
+
+$costo = $costo === '' ? 0.0 : (float) $costo;
+
+try {
+    $conexion->begin_transaction();
+    $activo = $conexion->prepare("SELECT id FROM activos WHERE id = ? AND estado <> 'baja' FOR UPDATE");
+    $activo->bind_param('i', $activoId);
+    $activo->execute();
+    if (!$activo->get_result()->fetch_assoc()) {
+        throw new RuntimeException('Activo no disponible.');
+    }
+
+    $guardar = $conexion->prepare('INSERT INTO mantenimientos (activo_id, tipo, descripcion, fecha, costo, tecnico) VALUES (?, ?, ?, NOW(), ?, ?)');
+    $guardar->bind_param('issds', $activoId, $tipo, $descripcion, $costo, $tecnico);
+    $guardar->execute();
+
+    $detalle = $tipo . ' registrado';
+    $historial = $conexion->prepare("INSERT INTO historial_activos (activo_id, accion, descripcion) VALUES (?, 'Mantenimiento', ?)");
+    $historial->bind_param('is', $activoId, $detalle);
+    $historial->execute();
+    $conexion->commit();
+} catch (Throwable $e) {
+    $conexion->rollback();
+    http_response_code(500);
+    exit('No fue posible registrar el mantenimiento.');
+}
+
+header('Location: index.php');
+exit();

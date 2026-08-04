@@ -1,5 +1,7 @@
 
 <?php
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin']);
 include("../../config/conexion.php");
 include("../../templates/header.php");
 include("../../templates/sidebar.php");
@@ -22,6 +24,8 @@ include("../../templates/sidebar.php");
             <!-- method="POST" Los datos se envían de forma interna (no visibles en la URL).-->     
 
             <form action="guardar.php" method="POST">
+
+                <?= csrf_field() ?>
 
                 <div class="row">
 
@@ -60,8 +64,8 @@ include("../../templates/sidebar.php");
 
                             ?>
 
-                            <option value="<?= $tipo['id'] ?>">
-                                <?= $tipo['nombre'] ?>
+                            <option value="<?= (int) $tipo['id'] ?>">
+                                <?= app_escape($tipo['nombre']) ?>
                             </option>
 
                             <?php } ?>

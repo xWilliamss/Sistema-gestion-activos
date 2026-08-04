@@ -1,10 +1,8 @@
 <?php
 
 session_start();
-
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
-}
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin', 'tecnico']);
 
 include("../../config/conexion.php");
 include("../../templates/header.php");
@@ -27,6 +25,8 @@ include("../../templates/sidebar.php");
         <div class="card-body">
 
             <form action="guardar.php" method="POST">
+
+                <?= csrf_field() ?>
 
                 <div class="row">
 
@@ -53,11 +53,11 @@ include("../../templates/sidebar.php");
 
                             ?>
 
-                            <option value="<?= $activo['id'] ?>">
+                            <option value="<?= (int) $activo['id'] ?>">
 
-                                <?= $activo['codigo'] ?>
+                                <?= app_escape($activo['codigo']) ?>
                                 -
-                                <?= $activo['modelo'] ?>
+                                <?= app_escape($activo['modelo']) ?>
 
                             </option>
 

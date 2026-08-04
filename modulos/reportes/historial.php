@@ -15,7 +15,7 @@ $dompdf = new Dompdf();
 $html = '
 
 <h2 style="text-align:center;">
-Reporte de Mantenimientos
+Reporte de Historial de Activos
 </h2>
 
 <table border="1" width="100%" cellspacing="0" cellpadding="5">
@@ -26,10 +26,9 @@ Reporte de Mantenimientos
 
 <th>ID</th>
 <th>Activo</th>
-<th>Tipo</th>
+<th>Acción</th>
 <th>Descripción</th>
 <th>Fecha</th>
-<th>Técnico</th>
 
 </tr>
 
@@ -43,19 +42,18 @@ $sql = "
 
 SELECT
 
-m.id,
+h.id,
 a.codigo,
-m.tipo,
-m.descripcion,
-m.fecha,
-m.tecnico
+h.accion,
+h.descripcion,
+h.fecha
 
-FROM mantenimientos m
+FROM historial_activos h
 
 INNER JOIN activos a
-ON m.activo_id = a.id
+ON h.activo_id = a.id
 
-ORDER BY m.fecha DESC
+ORDER BY h.fecha DESC
 
 ";
 
@@ -71,13 +69,11 @@ while($fila = $resultado->fetch_assoc()){
 
         <td>'.app_escape($fila['codigo']).'</td>
 
-        <td>'.app_escape($fila['tipo']).'</td>
+        <td>'.app_escape($fila['accion']).'</td>
 
         <td>'.app_escape($fila['descripcion']).'</td>
 
         <td>'.app_escape($fila['fecha']).'</td>
-
-        <td>'.app_escape($fila['tecnico']).'</td>
 
     </tr>
 
@@ -98,6 +94,6 @@ $dompdf->setPaper('A4', 'landscape');
 
 $dompdf->render();
 
-$dompdf->stream("reporte_mantenimientos.pdf", array("Attachment" => false));
+$dompdf->stream("reporte_historial.pdf", array("Attachment" => false));
 
 ?>

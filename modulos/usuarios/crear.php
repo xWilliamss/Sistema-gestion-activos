@@ -1,15 +1,11 @@
 <?php
-
 session_start();
-
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
-}
+require_once __DIR__ . '/../../config/auth.php';
+require_roles(['admin']);
 
 include("../../config/conexion.php");
 include("../../templates/header.php");
 include("../../templates/sidebar.php");
-
 ?>
 
 <div class="container-fluid p-4">
@@ -28,84 +24,48 @@ include("../../templates/sidebar.php");
 
             <form action="guardar.php" method="POST">
 
+                <?= csrf_field() ?>
+
                 <div class="row">
 
                     <div class="col-md-6 mb-3">
-
                         <label>Nombre</label>
-
-                        <input type="text"
-                        name="nombre"
-                        class="form-control"
-                        required>
-
+                        <input type="text" name="nombre" class="form-control" required>
                     </div>
 
                     <div class="col-md-6 mb-3">
-
                         <label>Apellido</label>
-
-                        <input type="text"
-                        name="apellido"
-                        class="form-control"
-                        required>
-
+                        <input type="text" name="apellido" class="form-control" required>
                     </div>
 
                     <div class="col-md-6 mb-3">
-
                         <label>Departamento</label>
-
-                        <input type="text"
-                        name="departamento"
-                        class="form-control">
-
+                         <input type="text" name="departamento" class="form-control">
                     </div>
 
                     <div class="col-md-6 mb-3">
-
                         <label>Cargo</label>
-
-                        <input type="text"
-                        name="cargo"
-                        class="form-control">
-
+                        <input type="text" name="cargo" class="form-control">
                     </div>
 
                     <div class="col-md-6 mb-3">
-
                         <label>Correo</label>
-
-                        <input type="email"
-                        name="correo"
-                        class="form-control">
-
+                        <input type="email" name="correo" class="form-control">
                     </div>
 
                     <div class="col-md-6 mb-3">
-
                         <label>Teléfono</label>
-
-                        <input type="text"
-                        name="telefono"
-                        class="form-control">
-
+                        <input type="text" name="telefono"class="form-control">
                     </div>
 
                 </div>
 
-                <button type="submit"
-                class="btn btn-success">
-
+                <button type="submit" class="btn btn-success">
                     Guardar Usuario
-
                 </button>
 
-                <a href="index.php"
-                class="btn btn-secondary">
-
+                <a href="index.php" class="btn btn-secondary">
                     Volver
-
                 </a>
 
             </form>

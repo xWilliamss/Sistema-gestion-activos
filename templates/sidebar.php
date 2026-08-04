@@ -1,4 +1,4 @@
-<div class="d-flex ">
+ <div class="d-flex ">
     <!-- barra lateral -->
      <div class="big-drak text-drak p-3 vh-100" style="width: 250px;">
         <h4 class="text-center mb-4">
@@ -26,7 +26,8 @@
                     Activos
                 </a>
             </li>
-            <?php if($_SESSION['rol'] != 'tecnico'){ ?>
+
+            <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] != 'tecnico'){ ?>
             <li class="nav-item mb-2">
                 <a href="/gestion_activos/modulos/usuarios/" class="nav-link text-black">
                     <i class="bi bi-people"></i>
@@ -35,7 +36,7 @@
             </li>
             <?php } ?>
 
-            <?php if($_SESSION['rol'] != 'tecnico'){ ?>
+            <?php if(isset($_SESSION['rol']) && $_SESSION['rol'] != 'tecnico'){ ?>
             <li class="nav-item mb-2">
                 <a href="/gestion_activos/modulos/asignaciones/" class="nav-link text-black">
                     <i class="bi bi-arrow-left-right"></i>
@@ -53,7 +54,7 @@
 
 
             <li class="nav-item mb-2">
-                <a href="/gestion_activos/modulos/reportes/inventario.php" class="nav-link text-black">
+                <a href="/gestion_activos/modulos/reportes/index.php" class="nav-link text-black">
                     <i class="bi bi-file-earmark-pdf"></i>
                     Reportes
                 </a>
@@ -62,12 +63,14 @@
         </ul>
         <hr>
         
-        <a href="/gestion_activos/logout.php"
-        class="btn btn-danger w-100">
+        <form action="/gestion_activos/logout.php" method="POST">
+        <?= csrf_field() ?>
+        <button type="submit" class="btn btn-danger w-100">
 
         <i class="bi bi-box-arrow-right"></i>
 
         Cerrar Sesión
 
-        </a>
+        </button>
+        </form>
 </div>

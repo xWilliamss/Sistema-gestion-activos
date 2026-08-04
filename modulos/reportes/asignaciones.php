@@ -1,13 +1,10 @@
 <?php
 
 session_start();
+require_once __DIR__ . '/../../config/auth.php';
+require_login();
 
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
-    exit();
-}
-
-require '../../dompdf/autoload.inc.php';
+require '../../dompdf/dompdf/autoload.inc.php';
 
 use Dompdf\Dompdf;
 
@@ -74,17 +71,17 @@ while($fila = $resultado->fetch_assoc()){
 
     <tr>
 
-        <td>'.$fila['codigo'].'</td>
+        <td>'.app_escape($fila['codigo']).'</td>
 
-        <td>'.$fila['nombre'].' '.$fila['apellido'].'</td>
+        <td>'.app_escape($fila['nombre']).' '.app_escape($fila['apellido']).'</td>
 
-        <td>'.$fila['fecha_asignacion'].'</td>
+        <td>'.app_escape($fila['fecha_asignacion']).'</td>
 
-        <td>'.$fila['fecha_devolucion'].'</td>
+        <td>'.app_escape($fila['fecha_devolucion']).'</td>
 
-        <td>'.$fila['estado'].'</td>
+        <td>'.app_escape($fila['estado']).'</td>
 
-        <td>'.$fila['observacion'].'</td>
+        <td>'.app_escape($fila['observacion']).'</td>
 
     </tr>
 

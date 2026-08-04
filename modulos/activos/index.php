@@ -1,7 +1,8 @@
 <?php
 // 1. SIEMPRE DEBE SER LA PRIMERA LÍNEA DEL ARCHIVO
 session_start(); // Este session es del archivo guardar.php. sirve para mostar mensaje de "¡Activo agregado correctamente!"
-
+require_once __DIR__ . '/../../config/auth.php';
+require_login();
 
 /* Incluimos las carpetas y los archivos correspontentes. */
 
@@ -15,7 +16,7 @@ include("../../templates/sidebar.php");
     <!-- 2. AQUÍ SE MUESTRA LA ALERTA (Arriba del título para que sea muy visible) -->
     <?php if(isset($_SESSION['mensaje'])): ?>
         <div class="alert alert-<?= $_SESSION['tipo_mensaje']; ?> alert-dismissible fade show" role="alert">
-            <?= $_SESSION['mensaje']; ?>
+            <?= app_escape($_SESSION['mensaje']); ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php 
@@ -77,14 +78,14 @@ include("../../templates/sidebar.php");
                     <tr>
 
                         <td><?= $fila['id'] ?></td>
-                        <td><?= $fila['codigo'] ?></td>
-                        <td><?= $fila['serie'] ?></td>
-                        <td><?= $fila['modelo'] ?></td>
-                        <td><?= $fila['sistema_operativo'] ?></td>
+                        <td><?= app_escape($fila['codigo']) ?></td>
+                        <td><?= app_escape($fila['serie']) ?></td>
+                        <td><?= app_escape($fila['modelo']) ?></td>
+                        <td><?= app_escape($fila['sistema_operativo']) ?></td>
                         <td>
 
                             <span class="badge bg-success">
-                                <?= $fila['estado'] ?>
+                                <?= app_escape($fila['estado']) ?>
                             </span>
 
                         </td>
@@ -104,12 +105,15 @@ include("../../templates/sidebar.php");
                             <?php } ?>
 
                             <?php if($_SESSION['rol'] == 'admin'){ ?>
-                            <a href="eliminar.php?id=<?= $fila['id'] ?>" 
-                            class="btn btn-danger btn-sm" 
+                            <form action="eliminar.php" method="POST" class="d-inline">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="id" value="<?= (int) $fila['id'] ?>">
+                            <button type="submit" class="btn btn-danger btn-sm"
                             onclick="return confirm('¿Deseas enviar este activo a baja?')">
                             
                                 <i class="bi bi-trash"></i>
-                            </a>
+                            </button>
+                            </form>
                             <?php } ?>
 
                         </td>

@@ -1,13 +1,11 @@
 <?php
 // inicia o reanuda la sesión del usuario.
 session_start();
+require_once __DIR__ . '/../../config/auth.php';
+require_login();
 
 /*Verifica si el usuario esta logueado.
 Si no existe la sesión, lo mandara automaticamente al login.php*/
-if(!isset($_SESSION['usuario'])){
-    header("Location: ../../login.php");
-}
-
 // Con este REQUIRE cargamos la liberia Dompdf.
 //USE importa el espacio de nombres necesario para usar la clase.
 require '../../dompdf/dompdf/autoload.inc.php';
@@ -60,13 +58,13 @@ $html .= '
 
 <td>'.$fila['id'].'</td>
 
-<td>'.$fila['codigo'].'</td>
+<td>'.app_escape($fila['codigo']).'</td>
 
-<td>'.$fila['serie'].'</td>
+<td>'.app_escape($fila['serie']).'</td>
 
-<td>'.$fila['modelo'].'</td>
+<td>'.app_escape($fila['modelo']).'</td>
 
-<td>'.$fila['estado'].'</td>
+<td>'.app_escape($fila['estado']).'</td>
 
 </tr>
 
